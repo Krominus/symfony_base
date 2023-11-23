@@ -8,11 +8,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BurgerController extends AbstractController
 {
-    #[Route('/liste', name: 'liste')]
-    public function liste(): Response
+    #[Route('/burger-list', name: 'app_burger_list')]
+    public function list(BurgerRepository $burgerRepository): Response
     {
-        return $this-> render('liste_burger.html.twig', [
-            'burgers' => [],
+        $burgers = $burgerRepository->findAll();
+
+        return $this->render('burger/list.html.twig', [
+            'burgers' => $burgers,
         ]);
     }
 }
