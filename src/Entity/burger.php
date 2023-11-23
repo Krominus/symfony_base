@@ -2,11 +2,10 @@
 
 namespace App\Entity;
 
+use App\Repository\BurgerRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\EntityManager;
 
 #[ORM\Entity(repositoryClass: BurgerRepository::class)]
-
 class Burger
 {
     #[ORM\Id]
@@ -14,76 +13,56 @@ class Burger
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToMany(targetEntity:Pain::class)]
-    private ?int $pain = null;
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
 
-    #[ORM\ManyToMany(targetEntity:Oignon::class)]
-    private ?int $oignon = null;
+    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\OneToOne(targetEntity: Image::class, cascade: ['persist', 'remove'])]
+    private ?Image $image = null;
 
-    #[ORM\ManyToMany(targetEntity:Sauce::class)]
-    private ?int $sauce = null;
+    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\ManyToOne(targetEntity: Pain::class, cascade: ['persist', 'remove'])]
+    private ?Pain $pain = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?int $image = null;
+    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\ManyToMany(targetEntity: Oignon::class)]
+    private ?array $oignon = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?string $commentaire = null;
+    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\OneToMany(targetEntity: Sauce::class, mappedBy: 'burger')]
+    private ?array $sauce = null;
 
-    public function setId($newId){
-        $this->id = $newId;
-    }
+    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\OneToOne(targetEntity: Commentaire::class, cascade: ['persist', 'remove'])]
+    private ?array $commentaire = null;
+    
 
-    public function getId(){
+    public function getId(): ?int
+    {
         return $this->id;
     }
 
-    public function setPain($nbPain)
+    public function getNom(): ?string
     {
-        $this->pain = $nbPain;
+        return $this->nom;
     }
 
-    public function getPain()
+    public function setNom(string $nom): static
     {
-        return $this->pain;
+        $this->nom = $nom;
+
+        return $this;
     }
 
-    public function setOignon($nbOignon)
-    {
-        $this->oignon = $nbOignon;
-    }
-
-    public function getOignon()
-    {
-        return $this->oignon;
-    }
-
-    public function setSauce($quelleSauce)
-    {
-        $this->sauce = $quelleSauce;
-    }
-
-    public function getSauce()
-    {
-        return $this->sauce;
-    }
-
-    public function setImage($nbImage)
-    {
-        $this->image = $nbImage;
-    }
-
-    public function getImage()
+    public function getImage(): ?Image
     {
         return $this->image;
     }
 
-    public function setCommentaire($comm)
+    public function setImage(Image $image): static
     {
-        $this->commentaire = $comm;
-    }
+        $this->image = $image;
 
-    public function getCommentaire()
-    {
-        return $this->commentaire;
+        return $this;
     }
 }
